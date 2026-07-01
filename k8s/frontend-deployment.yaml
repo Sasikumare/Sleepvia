@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sleepvia-frontend
+  labels:
+    app: sleepvia-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sleepvia-frontend
+  template:
+    metadata:
+      labels:
+        app: sleepvia-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: gcr.io/PROJECT_ID/sleepvia-frontend:1.0
+          ports:
+            - containerPort: 80
+          env:
+            - name: BACKEND_URL
+              value: "/api"

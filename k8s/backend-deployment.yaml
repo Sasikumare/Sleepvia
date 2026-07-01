@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sleepvia-backend
+  labels:
+    app: sleepvia-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sleepvia-backend
+  template:
+    metadata:
+      labels:
+        app: sleepvia-backend
+    spec:
+      containers:
+        - name: backend
+          image: gcr.io/PROJECT_ID/sleepvia-backend:1.0
+          ports:
+            - containerPort: 8080

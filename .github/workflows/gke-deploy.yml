@@ -1,0 +1,49 @@
+name: GKE Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build and deploy to GKE
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT }}
+          export_default_credentials: true
+
+      - name: Configure Docker for GCR
+        run: |
+          gcloud auth configure-docker --quiet
+
+      - name: Build backend image
+        run: |
+          docker build -t gcr.io/${{ secrets.GKE_PROJECT }}/sleepvia-backend:${{ github.sha }} ./backend
+          docker push gcr.io/${{ secrets.GKE_PROJECT }}/sleepvia-backend:${{ github.sha }}
+
+      - name: Build frontend image
+        run: |
+          docker build -t gcr.io/${{ secrets.GKE_PROJECT }}/sleepvia-frontend:${{ github.sha }} ./frontend
+          docker push gcr.io/${{ secrets.GKE_PROJECT }}/sleepvia-frontend:${{ github.sha }}
+
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER }}
+          location: ${{ secrets.GKE_ZONE }}
+          project_id: ${{ secrets.GKE_PROJECT }}
+
+      - name: Deploy Kubernetes manifests
+        run: |
+          sed -i "s|gcr.io/PROJECT_ID/sleepvia-backend:1.0|gcr.io/${{ secrets.GKE_PROJECT }}/sleepvia-backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
+          sed -i "s|gcr.io/PROJECT_ID/sleepvia-frontend:1.0|gcr.io/${{ secrets.GKE_PROJECT }}/sleepvia-frontend:${{ github.sha }}|g" k8s/frontend-deployment.yaml
+          kubectl apply -f k8s/
