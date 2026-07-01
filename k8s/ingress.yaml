@@ -6,7 +6,8 @@ metadata:
     kubernetes.io/ingress.class: gce
 spec:
   rules:
-    - http:
+    - host: sleepvia.duckdns.org
+      http:
         paths:
           - path: /api
             pathType: Prefix

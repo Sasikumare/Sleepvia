@@ -6,6 +6,10 @@ function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (window.location.pathname === '/') {
+      window.history.replaceState(null, '', '/home');
+    }
+
     fetch('/api/hello')
       .then((response) => {
         if (!response.ok) {
