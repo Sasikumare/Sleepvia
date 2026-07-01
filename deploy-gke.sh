@@ -17,16 +17,16 @@ echo "Zone: $CLUSTER_ZONE"
 echo "Image tag: $IMAGE_TAG"
 
 echo "Building backend image..."
-docker build -t gcr.io/$PROJECT_ID/sleepvia-backend:$IMAGE_TAG ./backend
+docker build -t us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-backend:$IMAGE_TAG ./backend
 
 echo "Pushing backend image..."
-docker push gcr.io/$PROJECT_ID/sleepvia-backend:$IMAGE_TAG
+docker push us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-backend:$IMAGE_TAG
 
 echo "Building frontend image..."
-docker build -t gcr.io/$PROJECT_ID/sleepvia-frontend:$IMAGE_TAG ./frontend
+docker build -t us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-frontend:$IMAGE_TAG ./frontend
 
 echo "Pushing frontend image..."
-docker push gcr.io/$PROJECT_ID/sleepvia-frontend:$IMAGE_TAG
+docker push us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-frontend:$IMAGE_TAG
 
 echo "Fetching GKE credentials..."
 gcloud container clusters get-credentials "$CLUSTER_NAME" --zone "$CLUSTER_ZONE" --project "$PROJECT_ID"
@@ -34,8 +34,8 @@ gcloud container clusters get-credentials "$CLUSTER_NAME" --zone "$CLUSTER_ZONE"
 echo "Deploying Kubernetes manifests..."
 cp k8s/backend-deployment.yaml /tmp/sleepvia-backend-deployment.yaml
 cp k8s/frontend-deployment.yaml /tmp/sleepvia-frontend-deployment.yaml
-sed -i.bak "s|gcr.io/PROJECT_ID/sleepvia-backend:1.0|gcr.io/$PROJECT_ID/sleepvia-backend:$IMAGE_TAG|g" /tmp/sleepvia-backend-deployment.yaml
-sed -i.bak "s|gcr.io/PROJECT_ID/sleepvia-frontend:1.0|gcr.io/$PROJECT_ID/sleepvia-frontend:$IMAGE_TAG|g" /tmp/sleepvia-frontend-deployment.yaml
+sed -i.bak "s|us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-backend:.*|us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-backend:$IMAGE_TAG|g" /tmp/sleepvia-backend-deployment.yaml
+sed -i.bak "s|us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-frontend:.*|us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-frontend:$IMAGE_TAG|g" /tmp/sleepvia-frontend-deployment.yaml
 kubectl apply -f /tmp/sleepvia-backend-deployment.yaml
 kubectl apply -f /tmp/sleepvia-frontend-deployment.yaml
 kubectl apply -f k8s/backend-service.yaml
