@@ -6,6 +6,8 @@ npm-debug.log
 
 # Java
 /target
+/backend/target
+/frontend/build
 *.log
 *.class
 
