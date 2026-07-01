@@ -56,7 +56,13 @@ fi
 echo "Checking OIDC provider..."
 if gcloud iam workload-identity-pools providers describe ${PROVIDER_NAME} \
   --project=${PROJECT_ID} --location="global" --workload-identity-pool=${WORKLOAD_POOL_NAME} >/dev/null 2>&1; then
-  echo "OIDC provider ${PROVIDER_NAME} already exists."
+  echo "OIDC provider ${PROVIDER_NAME} already exists. Updating its attribute mapping..."
+  gcloud iam workload-identity-pools providers update-oidc ${PROVIDER_NAME} \
+    --project=${PROJECT_ID} \
+    --location="global" \
+    --workload-identity-pool=${WORKLOAD_POOL_NAME} \
+    --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
+    --attribute-condition='assertion.iss == "https://token.actions.githubusercontent.com"'
 else
   echo "Creating OIDC provider..."
   gcloud iam workload-identity-pools providers create-oidc ${PROVIDER_NAME} \
@@ -66,7 +72,7 @@ else
     --display-name="GitHub Actions OIDC provider" \
     --issuer-uri="https://token.actions.githubusercontent.com" \
     --allowed-audiences="repo:${GITHUB_ORG}/${GITHUB_REPO}" \
-    --attribute-mapping="google.subject=assertion.sub" \
+    --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
     --attribute-condition='assertion.iss == "https://token.actions.githubusercontent.com"'
 fi
 

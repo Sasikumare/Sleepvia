@@ -32,8 +32,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ env.PROJECT_ID }}
-          export_default_credentials: true
-          install_kubectl: true
+          install_components: kubectl
 
       - name: Get GKE credentials
         run: |
