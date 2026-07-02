@@ -11,20 +11,13 @@ function App() {
     }
 
     fetch('/api/hello')
-      .then(async (response) => {
+      .then((response) => {
         if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.status}`);
+          throw new Error('Network response was not ok');
         }
-
-        const contentType = response.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
-          return response.json();
-        }
-
-        const text = await response.text();
-        throw new Error(text.includes('<!doctype') ? 'Backend route is not being served correctly' : text);
+        return response.json();
       })
-      .then((data) => setMessage(data.message || 'Hello from Sleepvia!'))
+      .then((data) => setMessage(data.message))
       .catch((err) => setError(err.message));
   }, []);
 
