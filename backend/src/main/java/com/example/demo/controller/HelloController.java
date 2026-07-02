@@ -12,6 +12,6 @@ public class HelloController {
 
     @GetMapping("/hello")
     public Map<String, String> hello() {
-        return Map.of("message", "Hello from Sleepvia!");
+        return Map.of("message", "Welcome from Sleepvia!");
     }
 }
