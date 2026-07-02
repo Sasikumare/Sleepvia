@@ -1,7 +1,9 @@
 function Footer() {
+  const year = new Date().getFullYear();
+
   return (
     <footer className="footer">
-      <p>&#xA9; 2026, Sleepvia all rights reserved</p>
+      <p>© {year}, Sleepvia all rights reserved</p>
     </footer>
   );
 }
