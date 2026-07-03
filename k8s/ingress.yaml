@@ -4,10 +4,13 @@ metadata:
   name: sleepvia-ingress
   annotations:
     kubernetes.io/ingress.class: gce
-    cert-manager.io/issuer: letsencrypt-prod
-    kubernetes.io/ingress.allow-http: "false"
-    ingress.gcp.kubernetes.io/force-https: "true"
+    kubernetes.io/ingress.global-static-ip-name: sleepvia-static-ip
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/acme-http01-edit-in-place: "true"
+    kubernetes.io/ingress.allow-http: "true"
+    ingress.gcp.kubernetes.io/force-https: "false"
 spec:
+  ingressClassName: gce
   tls:
   - hosts:
     - sleepvia.duckdns.org
