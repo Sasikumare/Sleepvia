@@ -17,6 +17,17 @@ steps:
       - -lc
       - |
         gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
+        if ! kubectl get deployment cert-manager -n cert-manager &>/dev/null; then
+          echo "Installing cert-manager..."
+          curl https://raw.githubusercontent.com/cert-manager/cert-manager/release-1.13/deploy/crds.yaml | kubectl apply -f -
+          kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
+          gcloud container clusters update $CLUSTER_NAME --zone $CLUSTER_ZONE --enable-addons HorizontalPodAutoscaling --update-addons CoreDNS=ENABLED,HttpLoadBalancing=ENABLED,HorizontalPodAutoscaling=ENABLED || true
+          kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
+          sleep 30
+          echo "cert-manager installed successfully"
+        else
+          echo "cert-manager already installed"
+        fi
         kubectl get clusterissuer letsencrypt-prod || kubectl apply -f k8s/cert-issuer.yaml
         PROJECT_ID=$PROJECT_ID envsubst < k8s/backend-deployment.yaml | kubectl apply -f -
         PROJECT_ID=$PROJECT_ID envsubst < k8s/frontend-deployment.yaml | kubectl apply -f -

@@ -68,7 +68,24 @@ jobs:
             ${{ env.REPO_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/sleepvia-frontend:${{ github.sha }}
           platforms: linux/amd64
 
-      - name: Apply cert-manager issuer (one-time setup)
+      - name: Install cert-manager (one-time setup)
+        run: |
+          if ! kubectl get deployment cert-manager -n cert-manager &>/dev/null; then
+            echo "Installing cert-manager..."
+            helm repo add jetstack https://charts.jetstack.io 2>/dev/null || true
+            helm repo update
+            kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
+            kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.crds.yaml
+            helm upgrade --install cert-manager jetstack/cert-manager \
+              --namespace cert-manager \
+              --version v1.13.0 \
+              --wait
+            echo "cert-manager installed successfully"
+          else
+            echo "cert-manager already installed"
+          fi
+
+      - name: Apply cert-manager issuer
         run: |
           kubectl get clusterissuer letsencrypt-prod || kubectl apply -f k8s/cert-issuer.yaml
 
