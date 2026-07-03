@@ -97,6 +97,11 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
   --member="serviceAccount:${SERVICE_ACCOUNT_EMAIL}" \
   --role="roles/container.developer"
 
+echo "Granting GKE cluster admin role for cert-manager installation..."
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member="serviceAccount:${SERVICE_ACCOUNT_EMAIL}" \
+  --role="roles/container.admin"
+
 echo "Binding Workload Identity user role for the provider..."
 gcloud iam service-accounts add-iam-policy-binding ${SERVICE_ACCOUNT_EMAIL} \
   --project=${PROJECT_ID} \
