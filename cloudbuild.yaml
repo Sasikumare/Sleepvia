@@ -17,9 +17,12 @@ steps:
       - -lc
       - |
         gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
-        sed -i "s|us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-backend:.*|us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-backend:$SHORT_SHA|g" k8s/backend-deployment.yaml
-        sed -i "s|us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-frontend:.*|us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-frontend:$SHORT_SHA|g" k8s/frontend-deployment.yaml
-        kubectl apply -f k8s/
+        kubectl get clusterissuer letsencrypt-prod || kubectl apply -f k8s/cert-issuer.yaml
+        PROJECT_ID=$PROJECT_ID envsubst < k8s/backend-deployment.yaml | kubectl apply -f -
+        PROJECT_ID=$PROJECT_ID envsubst < k8s/frontend-deployment.yaml | kubectl apply -f -
+        kubectl apply -f k8s/backend-service.yaml
+        kubectl apply -f k8s/frontend-service.yaml
+        kubectl apply -f k8s/ingress.yaml
 
 substitutions:
   _CLUSTER_NAME: "sleepvia-cluster"

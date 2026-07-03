@@ -68,10 +68,14 @@ jobs:
             ${{ env.REPO_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/sleepvia-frontend:${{ github.sha }}
           platforms: linux/amd64
 
+      - name: Apply cert-manager issuer (one-time setup)
+        run: |
+          kubectl get clusterissuer letsencrypt-prod || kubectl apply -f k8s/cert-issuer.yaml
+
       - name: Deploy updated images to GKE
         run: |
-          kubectl set image deployment/sleepvia-backend backend=${{ env.REPO_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/sleepvia-backend:${{ github.sha }} --record
-          kubectl set image deployment/sleepvia-frontend frontend=${{ env.REPO_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/sleepvia-frontend:${{ github.sha }} --record
+          PROJECT_ID=${{ env.PROJECT_ID }} envsubst < k8s/backend-deployment.yaml | kubectl apply -f -
+          PROJECT_ID=${{ env.PROJECT_ID }} envsubst < k8s/frontend-deployment.yaml | kubectl apply -f -
           kubectl rollout status deployment/sleepvia-backend --timeout=120s
           kubectl rollout status deployment/sleepvia-frontend --timeout=120s
 

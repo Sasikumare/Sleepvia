@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: us-west1-docker.pkg.dev/project-8dc10e91-6100-4532-bb6/sleepvia-repo/sleepvia-frontend:latest
+          image: us-west1-docker.pkg.dev/${PROJECT_ID}/sleepvia-repo/sleepvia-frontend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
