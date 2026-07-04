@@ -1,43 +1,85 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-backend:$SHORT_SHA', './backend']
+# ==========================
+# Build Backend
+# ==========================
+- name: gcr.io/cloud-builders/docker
+  args:
+    - build
+    - "-t"
+    - us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-backend:$SHORT_SHA
+    - ./backend
 
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-backend:$SHORT_SHA']
+# ==========================
+# Push Backend
+# ==========================
+- name: gcr.io/cloud-builders/docker
+  args:
+    - push
+    - us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-backend:$SHORT_SHA
 
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-frontend:$SHORT_SHA', './frontend']
+# ==========================
+# Build Frontend
+# ==========================
+- name: gcr.io/cloud-builders/docker
+  args:
+    - build
+    - "-t"
+    - us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-frontend:$SHORT_SHA
+    - ./frontend
 
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-frontend:$SHORT_SHA']
+# ==========================
+# Push Frontend
+# ==========================
+- name: gcr.io/cloud-builders/docker
+  args:
+    - push
+    - us-west1-docker.pkg.dev/$PROJECT_ID/sleepvia-repo/sleepvia-frontend:$SHORT_SHA
 
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
-    entrypoint: bash
-    args:
-      - -lc
-      - |
-        gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
-        if ! kubectl get deployment cert-manager -n cert-manager &>/dev/null; then
-          echo "Installing cert-manager..."
-          curl https://raw.githubusercontent.com/cert-manager/cert-manager/release-1.13/deploy/crds.yaml | kubectl apply -f -
-          kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
-          gcloud container clusters update $CLUSTER_NAME --zone $CLUSTER_ZONE --enable-addons HorizontalPodAutoscaling --update-addons CoreDNS=ENABLED,HttpLoadBalancing=ENABLED,HorizontalPodAutoscaling=ENABLED || true
-          kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
-          sleep 30
-          echo "cert-manager installed successfully"
-        else
-          echo "cert-manager already installed"
-        fi
-        kubectl get clusterissuer letsencrypt-prod || kubectl apply -f k8s/cert-issuer.yaml
-        PROJECT_ID=$PROJECT_ID envsubst < k8s/backend-deployment.yaml | kubectl apply -f -
-        PROJECT_ID=$PROJECT_ID envsubst < k8s/frontend-deployment.yaml | kubectl apply -f -
-        kubectl apply -f k8s/backend-service.yaml
-        kubectl apply -f k8s/frontend-service.yaml
-        kubectl apply -f k8s/ingress.yaml
+# ==========================
+# Deploy
+# ==========================
+- name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      set -e
+
+      gcloud container clusters get-credentials ${_CLUSTER_NAME} \
+        --zone ${_CLUSTER_ZONE} \
+        --project $PROJECT_ID
+
+      if ! kubectl get deployment cert-manager -n cert-manager &>/dev/null; then
+        echo "Installing cert-manager..."
+
+        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
+
+        kubectl wait \
+          --namespace cert-manager \
+          --for=condition=Available deployment/cert-manager \
+          --timeout=300s
+
+        kubectl apply -f k8s/cert-issuer.yaml
+      fi
+
+      kubectl get clusterissuer letsencrypt-prod || kubectl apply -f k8s/cert-issuer.yaml
+
+      export PROJECT_ID=$PROJECT_ID
+      export IMAGE_TAG=$SHORT_SHA
+
+      envsubst < k8s/backend-deployment.yaml | kubectl apply -f -
+
+      envsubst < k8s/frontend-deployment.yaml | kubectl apply -f -
+
+      kubectl apply -f k8s/backend-service.yaml
+      kubectl apply -f k8s/frontend-service.yaml
+      kubectl apply -f k8s/ingress.yaml
+
+      kubectl rollout status deployment/sleepvia-backend
+      kubectl rollout status deployment/sleepvia-frontend
 
 substitutions:
-  _CLUSTER_NAME: "sleepvia-cluster"
-  _CLUSTER_ZONE: "us-west1-a"
-options:
-  substitutions: true
+  _CLUSTER_NAME: sleepvia-cluster
+  _CLUSTER_ZONE: us-west1-a
+
 timeout: 1200s
