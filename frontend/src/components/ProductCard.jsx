@@ -1,11 +1,15 @@
-function ProductCard({ name, description, price, tag }) {
+function ProductCard({ name, description, price, tag, image }) {
   return (
     <article className="product-card">
       <div className="product-card-top">
         <span className="product-tag">{tag}</span>
         <div className="product-favorite">★</div>
       </div>
-      <div className="product-image" />
+      {image ? (
+        <img src={image} alt={name} className="product-image" loading="lazy" />
+      ) : (
+        <div className="product-image" />
+      )}
       <div className="product-copy">
         <h3>{name}</h3>
         <p>{description}</p>

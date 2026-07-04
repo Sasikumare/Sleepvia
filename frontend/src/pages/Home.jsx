@@ -32,24 +32,28 @@ const bestSellers = [
     price: '$29.99',
     description: 'Lavender, chamomile, and magnesium for a soothing rest.',
     tag: 'Best seller',
+    image: 'https://storage.googleapis.com/sleepvia-images-20260703/Product1.jpeg',
   },
   {
     name: 'Night Calm Tonic',
     price: '$24.50',
     description: 'Herbal support that helps calm racing thoughts before bed.',
     tag: 'New',
+    image: 'https://storage.googleapis.com/sleepvia-images-20260703/Product2.jpeg',
   },
   {
     name: 'Dream Pause Mist',
     price: '$18.00',
     description: 'A light mist to freshen your bedroom and encourage calm.',
     tag: 'Popular',
+    image: 'https://storage.googleapis.com/sleepvia-images-20260703/Product1.jpeg',
   },
   {
     name: 'Sleep Support Tea',
     price: '$22.75',
     description: 'Warm, comforting tea with chamomile and valerian root.',
     tag: 'Favorite',
+    image: 'https://storage.googleapis.com/sleepvia-images-20260703/Product2.jpeg',
   },
 ];
 
