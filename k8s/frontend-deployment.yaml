@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sleepvia-frontend
-  labels:
-    app: sleepvia-frontend
 spec:
   replicas: 1
   selector:
@@ -16,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: us-west1-docker.pkg.dev/${PROJECT_ID}/sleepvia-repo/sleepvia-frontend:${IMAGE_TAG}
+          image: us-west1-docker.pkg.dev/project-8dc10e91-6100-4532-bb6/sleepvia-repo/sleepvia-frontend:placeholder
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -26,7 +24,6 @@ spec:
               port: 80
             initialDelaySeconds: 5
             periodSeconds: 10
-            successThreshold: 1
             failureThreshold: 3
           livenessProbe:
             httpGet:
