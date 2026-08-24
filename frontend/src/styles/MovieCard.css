@@ -1,0 +1,47 @@
+.movie-card {
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+}
+
+.movie-card:hover .movie-poster {
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+}
+
+.movie-poster {
+  overflow: hidden;
+  border-radius: 4px;
+  background: #1a1a1a;
+  transition: box-shadow 0.3s;
+  margin-bottom: 8px;
+}
+
+.movie-poster img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-info {
+  padding: 0 5px;
+}
+
+.movie-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e0e0e0;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.movie-info p {
+  margin: 0;
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+}

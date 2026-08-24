@@ -1,0 +1,135 @@
+.movie-grid-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.category-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #e0e0e0;
+  padding: 20px;
+  background: #1a1a1a;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border-left: 4px solid #555;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  min-width: 42px;
+  height: 36px;
+  border: 1px solid #3a3a3a;
+  background: #1d1d1d;
+  color: #d0d0d0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #2a2a2a;
+  border-color: #5a5a5a;
+  color: #ffffff;
+}
+
+.page-ellipsis {
+  background: transparent;
+  border: none;
+  color: #bdbdbd;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.page-ellipsis:hover:not(:disabled) {
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+}
+
+.prev-btn,
+.next-btn {
+  background: #111111;
+  border-color: #2b2b2b;
+}
+
+.page-btn.active {
+  background: #ffffff;
+  color: #121212;
+  border-color: #ffffff;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.no-results {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  background: #1a1a1a;
+  border: 1px solid #2d2d2d;
+  border-radius: 8px;
+  color: #d7d7d7;
+  font-size: 16px;
+  text-align: center;
+  padding: 20px;
+}
+
+@media (max-width: 1400px) {
+  .movie-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+  }
+
+  .category-title {
+    font-size: 16px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  .movie-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .pagination {
+    gap: 8px;
+  }
+
+  .page-btn {
+    min-width: 36px;
+    height: 32px;
+    font-size: 12px;
+  }
+}

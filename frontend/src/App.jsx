@@ -1,8 +1,8 @@
 import './App.css';
-import Home from './pages/Home';
+import Movies from './pages/Movies';
 
 function App() {
-  return <Home />;
+  return <Movies />;
 }
 
 export default App;

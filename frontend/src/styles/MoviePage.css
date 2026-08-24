@@ -1,0 +1,260 @@
+.movie-page {
+  min-height: 100vh;
+  background: #0f0f0f;
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-content {
+  display: flex;
+  gap: 30px;
+  padding: 30px;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.movie-footer {
+  margin-top: 20px;
+  background: rgba(17, 17, 17, 0.95);
+  border-top: 1px solid #2b2b2b;
+  padding: 28px 20px 40px;
+}
+
+.movie-footer-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 14px;
+  color: #f2f2f2;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.footer-links span {
+  opacity: 0.95;
+}
+
+.movie-footer p {
+  margin: 0 auto;
+  color: #b0b0b0;
+  font-size: 13px;
+  line-height: 1.8;
+  max-width: 1100px;
+  text-align: center;
+}
+
+.movie-detail-page {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px 30px 0;
+}
+
+.movie-detail-shell {
+  background: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+  padding: 24px 20px 10px;
+}
+
+.detail-header-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.detail-header-row h2 {
+  margin: 0;
+  min-width: 0;
+  color: #f2f2f2;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 2vw, 2.6rem);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.back-button {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #eaeaea;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.movie-detail-layout {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.movie-detail-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 26px;
+  background: rgba(11, 11, 11, 0.7);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 24px;
+}
+
+.detail-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.video-preview-box {
+  position: relative;
+  min-height: 520px;
+  height: 520px;
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  background: #000;
+}
+
+.video-preview-box:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: visible;
+  background: #000;
+}
+
+.video-preview-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: #000;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.video-preview-box.has-video-active .video-preview-background {
+  opacity: 0;
+}
+
+.movie-video-player {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  background: #000;
+  transition: opacity 0.15s ease;
+  cursor: pointer;
+}
+
+.movie-video-player.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.movie-video-player.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.play-overlay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 181, 0, 0.95);
+  color: #111;
+  font-size: 3rem;
+  font-weight: 700;
+  box-shadow: 0 0 0 10px rgba(255, 181, 0, 0.18);
+  cursor: pointer;
+}
+
+.movie-card-button {
+  all: unset;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+  .movie-content {
+    flex-direction: column;
+  }
+
+  .movie-detail-layout {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 960px) {
+  .movie-detail-card {
+    flex-direction: column;
+  }
+
+  .video-preview-box {
+    min-height: 420px;
+    height: 420px;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-header-row {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .detail-header-row h2 {
+    font-size: clamp(1.25rem, 5vw, 1.8rem);
+  }
+
+  .movie-content,
+  .movie-detail-page {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .movie-footer p {
+    max-width: 100%;
+  }
+
+  .detail-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .video-preview-box {
+    min-height: 300px;
+    height: 300px;
+  }
+
+  .movie-detail-shell {
+    padding: 18px 14px 10px;
+  }
+}
